@@ -16,15 +16,15 @@ public class PlayerController : MonoBehaviour
     [Tooltip("Þeritler arasý mesafe ")]
     public float laneDistance = 3f;
 
-    [Tooltip("Bir þeritten diðerine geçiþ hýzý ")]
+    [Tooltip("Bir þeritten diðerine geçiþ hýzý")]
     public float laneChangeSpeed = 10f;
 
     [Header("Zýplama Ayarlarý")]
-    [Tooltip("Zýplama anýndaki dikey hýz ")]
+    [Tooltip("Zýplama anýndaki dikey hýz")]
     public float jumpForce = 9f;
 
     [Header("Eðilme Ayarlarý")]
-    [Tooltip("Eðilme durumunun ne kadar süreceði")]
+    [Tooltip("Eðilme durumunun ne kadar süreceði ")]
     public float slideDuration = 0.8f;
 
     [Tooltip("Eðilme sýrasýndaki CharacterController yüksekliði")]
@@ -49,13 +49,14 @@ public class PlayerController : MonoBehaviour
     private Vector3 standingScale;
     private bool isSliding;
 
+    
     private float footOffset;
 
     void Awake()
     {
         controller = GetComponent<CharacterController>();
 
-       
+      
         standingHeight = controller.height;
         standingCenter = controller.center;
         standingScale = transform.localScale;
@@ -65,9 +66,24 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
+        
+        if (GameManager.Instance != null && GameManager.Instance.isGameOver) return;
+
         HandleSwipeInput();
         HandleGravity();
         Move();
+    }
+
+   
+    private void OnControllerColliderHit(ControllerColliderHit hit)
+    {
+        if (hit.gameObject.CompareTag("Obstacle"))
+        {
+            if (GameManager.Instance != null)
+            {
+                GameManager.Instance.TriggerGameOver();
+            }
+        }
     }
 
     private void HandleSwipeInput()
@@ -108,7 +124,7 @@ public class PlayerController : MonoBehaviour
             }
         }
 
-       
+        
         if (Keyboard.current != null)
         {
             if (Keyboard.current.rightArrowKey.wasPressedThisFrame) ChangeLane(1);
@@ -136,7 +152,7 @@ public class PlayerController : MonoBehaviour
 
     private void Slide()
     {
-        
+       
         if (isSliding || !controller.isGrounded) return;
 
         StartCoroutine(SlideCoroutine());
@@ -146,7 +162,7 @@ public class PlayerController : MonoBehaviour
     {
         isSliding = true;
 
-      
+   
         controller.height = slideHeight;
         controller.center = new Vector3(standingCenter.x, footOffset + (slideHeight / 2f), standingCenter.z);
 
