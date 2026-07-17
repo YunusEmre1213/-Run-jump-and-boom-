@@ -1,0 +1,55 @@
+# ---- Unity tarafından otomatik üretilen klasörler ----
+[Ll]ibrary/
+[Tt]emp/
+[Oo]bj/
+[Bb]uild/
+[Bb]uilds/
+[Ll]ogs/
+[Uu]serSettings/
+[Mm]emoryCaptures/
+
+# ---- Asset içe aktarma (import) önbelleği ----
+[Aa]ssets/AssetStoreTools*
+.vs/
+.gradle/
+
+# ---- Visual Studio / Rider / VS Code önbellekleri ----
+.vscode/
+.idea/
+*.csproj
+*.unityproj
+*.sln
+*.suo
+*.tmp
+*.user
+*.userprefs
+*.pidb
+*.booproj
+*.svd
+*.pdb
+*.mdb
+*.opendb
+*.VC.db
+
+# ---- Unity'nin oluşturduğu gereksiz dosyalar ----
+sysinfo.txt
+*.apk
+*.aab
+*.unitypackage
+*.app
+crashlytics-build.properties
+
+# ---- Kalıcı olarak takip edilmesi GEREKEN klasörler (referans amaçlı, silme) ----
+# Assets/
+# Packages/
+# ProjectSettings/
+
+# ---- Editor kilit dosyaları ----
+[Ll]ibrary/
+*.tmp
+
+# ---- macOS özel ----
+.DS_Store
+
+# ---- Windows özel ----
+Thumbs.db
