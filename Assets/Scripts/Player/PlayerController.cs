@@ -2,35 +2,45 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
+
 [RequireComponent(typeof(CharacterController))]
 public class PlayerController : MonoBehaviour
 {
     [Header("Hareket Ayarlarý")]
-    [Tooltip("Karakterin sabit ileri koþu hýzý ")]
-    public float forwardSpeed = 8f;
+    [Tooltip("Karakterin baþlangýç ileri koþu hýzý (birim/saniye)")]
+    public float baseForwardSpeed = 8f;
 
-    [Tooltip("Yerçekimi kuvveti ")]
+    [Tooltip("Hýzýn zamanla ulaþabileceði maksimum deðer")]
+    public float maxForwardSpeed = 18f;
+
+    [Tooltip("Hýzýn maksimuma ne kadar 'çabuk' yaklaþacaðýný belirler (büyük deðer = daha yavaþ artýþ)")]
+    public float speedRampTime = 60f;
+
+    [Tooltip("Yerçekimi kuvveti (negatif olmalý)")]
     public float gravity = -20f;
+    public float forwardSpeed { get; private set; }
+    private float elapsedTime = 0f;
 
     [Header("Þerit Ayarlarý")]
-    [Tooltip("Þeritler arasý mesafe ")]
+    [Tooltip("Þeritler arasý mesafe (birim)")]
     public float laneDistance = 3f;
 
-    [Tooltip("Bir þeritten diðerine geçiþ hýzý")]
+    [Tooltip("Bir þeritten diðerine geçiþ hýzý (Lerp katsayýsý)")]
     public float laneChangeSpeed = 10f;
 
     [Header("Zýplama Ayarlarý")]
-    [Tooltip("Zýplama anýndaki dikey hýz")]
+    [Tooltip("Zýplama anýndaki dikey hýz (ne kadar yüksek zýplayacaðýný belirler)")]
     public float jumpForce = 9f;
 
     [Header("Eðilme Ayarlarý")]
-    [Tooltip("Eðilme durumunun ne kadar süreceði ")]
+    [Tooltip("Eðilme durumunun ne kadar süreceði (saniye)")]
     public float slideDuration = 0.8f;
 
     [Tooltip("Eðilme sýrasýndaki CharacterController yüksekliði")]
     public float slideHeight = 1f;
 
     [Header("Swipe Ayarlarý")]
+    [Tooltip("Bir hareketin swipe sayýlmasý için gereken minimum piksel mesafesi")]
     public float swipeThreshold = 50f;
 
     // -1 = sol þerit, 0 = orta þerit, 1 = sað þerit
@@ -43,20 +53,20 @@ public class PlayerController : MonoBehaviour
     private Vector2 touchStartPos;
     private bool isTouching;
 
-    
+   
     private float standingHeight;
     private Vector3 standingCenter;
     private Vector3 standingScale;
     private bool isSliding;
 
-    
+   
     private float footOffset;
 
     void Awake()
     {
         controller = GetComponent<CharacterController>();
 
-      
+       
         standingHeight = controller.height;
         standingCenter = controller.center;
         standingScale = transform.localScale;
@@ -66,15 +76,22 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-        
+       
         if (GameManager.Instance != null && GameManager.Instance.isGameOver) return;
 
+        UpdateSpeed();
         HandleSwipeInput();
         HandleGravity();
         Move();
     }
 
-   
+    private void UpdateSpeed()
+    {
+        elapsedTime += Time.deltaTime;
+        float t = 1f - Mathf.Exp(-elapsedTime / speedRampTime);
+        forwardSpeed = Mathf.Lerp(baseForwardSpeed, maxForwardSpeed, t);
+    }
+
     private void OnControllerColliderHit(ControllerColliderHit hit)
     {
         if (hit.gameObject.CompareTag("Obstacle"))
@@ -143,7 +160,7 @@ public class PlayerController : MonoBehaviour
 
     private void Jump()
     {
-        
+       
         if (controller.isGrounded && !isSliding)
         {
             verticalVelocity = jumpForce;
@@ -152,7 +169,7 @@ public class PlayerController : MonoBehaviour
 
     private void Slide()
     {
-       
+        
         if (isSliding || !controller.isGrounded) return;
 
         StartCoroutine(SlideCoroutine());
@@ -162,7 +179,7 @@ public class PlayerController : MonoBehaviour
     {
         isSliding = true;
 
-   
+       
         controller.height = slideHeight;
         controller.center = new Vector3(standingCenter.x, footOffset + (slideHeight / 2f), standingCenter.z);
 
