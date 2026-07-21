@@ -1,7 +1,6 @@
 using UnityEngine;
 using TMPro;
 
-
 public class DebugHUD : MonoBehaviour
 {
     [Header("Referanslar")]
@@ -14,6 +13,12 @@ public class DebugHUD : MonoBehaviour
 
     [Tooltip("Geçen süreyi gösterecek TextMeshPro metni")]
     public TextMeshProUGUI timeText;
+
+    [Tooltip("Skoru gösterecek TextMeshPro metni")]
+    public TextMeshProUGUI scoreText;
+
+    [Tooltip("Altýný gösterecek TextMeshPro metni")]
+    public TextMeshProUGUI goldText;
 
     private float elapsedTime = 0f;
 
@@ -29,6 +34,16 @@ public class DebugHUD : MonoBehaviour
         if (timeText != null)
         {
             timeText.text = $"Süre: {elapsedTime:F1}s";
+        }
+
+        if (scoreText != null && GameManager.Instance != null)
+        {
+            scoreText.text = $"Skor: {GameManager.Instance.score}";
+        }
+
+        if (goldText != null && GameManager.Instance != null)
+        {
+            goldText.text = $"Altýn: {GameManager.Instance.gold}";
         }
     }
 }
