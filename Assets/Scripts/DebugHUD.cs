@@ -20,6 +20,9 @@ public class DebugHUD : MonoBehaviour
     [Tooltip("Altýný gösterecek TextMeshPro metni")]
     public TextMeshProUGUI goldText;
 
+    [Tooltip("Mermiyi gösterecek TextMeshPro metni")]
+    public TextMeshProUGUI ammoText;
+
     private float elapsedTime = 0f;
 
     void Update()
@@ -44,6 +47,11 @@ public class DebugHUD : MonoBehaviour
         if (goldText != null && GameManager.Instance != null)
         {
             goldText.text = $"Altýn: {GameManager.Instance.gold}";
+        }
+
+        if (ammoText != null && GameManager.Instance != null)
+        {
+            ammoText.text = $"Mermi: {GameManager.Instance.currentAmmo}";
         }
     }
 }
