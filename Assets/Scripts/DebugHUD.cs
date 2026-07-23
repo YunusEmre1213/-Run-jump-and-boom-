@@ -23,6 +23,12 @@ public class DebugHUD : MonoBehaviour
     [Tooltip("Mermiyi gösterecek TextMeshPro metni")]
     public TextMeshProUGUI ammoText;
 
+    [Tooltip("Caný gösterecek TextMeshPro metni")]
+    public TextMeshProUGUI healthText;
+
+    [Tooltip("Combo/çarpaný gösterecek TextMeshPro metni")]
+    public TextMeshProUGUI comboText;
+
     private float elapsedTime = 0f;
 
     void Update()
@@ -52,6 +58,16 @@ public class DebugHUD : MonoBehaviour
         if (ammoText != null && GameManager.Instance != null)
         {
             ammoText.text = $"Mermi: {GameManager.Instance.currentAmmo}";
+        }
+
+        if (healthText != null && GameManager.Instance != null)
+        {
+            healthText.text = $"Can: {GameManager.Instance.currentHealth}";
+        }
+
+        if (comboText != null && GameManager.Instance != null)
+        {
+            comboText.text = $"Combo: {GameManager.Instance.comboCount} (x{GameManager.Instance.currentComboMultiplier:F1})";
         }
     }
 }
