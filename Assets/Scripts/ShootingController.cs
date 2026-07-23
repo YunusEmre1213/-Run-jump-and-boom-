@@ -1,7 +1,6 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-
 public class ShootingController : MonoBehaviour
 {
     [Header("Referanslar")]
@@ -25,21 +24,21 @@ public class ShootingController : MonoBehaviour
 
     void Update()
     {
-        if (GameManager.Instance != null && GameManager.Instance.isGameOver) return;
+        if (GameManager.Instance != null && (!GameManager.Instance.isGameStarted || GameManager.Instance.isGameOver)) return;
 
         HandleTouchShoot();
     }
 
     private void HandleTouchShoot()
     {
-        
+       
         if (Touchscreen.current != null && Touchscreen.current.primaryTouch.press.wasPressedThisFrame)
         {
             Vector2 screenPos = Touchscreen.current.primaryTouch.position.ReadValue();
             TryShootAt(screenPos);
         }
 
-        
+    
         if (Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame)
         {
             Vector2 screenPos = Mouse.current.position.ReadValue();
@@ -64,7 +63,7 @@ public class ShootingController : MonoBehaviour
 
     private void TryHitEnemy(GameObject enemy)
     {
-        
+      
         if (GameManager.Instance == null || !GameManager.Instance.TryUseAmmo(ammoCostPerShot))
         {
             Debug.Log("Mermi yetersiz, ateþ edilemedi.");

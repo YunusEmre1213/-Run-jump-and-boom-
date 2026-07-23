@@ -1,7 +1,6 @@
 using System.Collections;
 using UnityEngine;
 
-
 public class Enemy : MonoBehaviour
 {
     [Header("Skor")]
@@ -18,7 +17,7 @@ public class Enemy : MonoBehaviour
     [Tooltip("Geri sayýmý gösteren halka objesi (opsiyonel, boþ býrakýlabilir)")]
     public Transform ringIndicator;
 
-    
+   
     [HideInInspector]
     public ObjectPool sourcePool;
 
@@ -66,8 +65,12 @@ public class Enemy : MonoBehaviour
     {
         if (countdownStarted || playerTransform == null) return;
 
+       
+        if (GameManager.Instance != null && !GameManager.Instance.isGameStarted) return;
+
         float distance = transform.position.z - playerTransform.position.z;
 
+      
         if (distance <= activationDistance)
         {
             countdownStarted = true;
@@ -92,11 +95,11 @@ public class Enemy : MonoBehaviour
             yield return null;
         }
 
-        
+      
         OnMissed();
     }
 
-   
+  
     public void OnHit()
     {
         if (GameManager.Instance != null)
@@ -109,7 +112,7 @@ public class Enemy : MonoBehaviour
         ReturnToPool();
     }
 
-   
+
     private void OnMissed()
     {
         if (GameManager.Instance != null)

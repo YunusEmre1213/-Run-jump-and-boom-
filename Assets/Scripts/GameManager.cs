@@ -1,12 +1,12 @@
 using UnityEngine;
 
-
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance { get; private set; }
 
     [Header("Oyun Durumu")]
     public bool isGameOver = false;
+    public bool isGameStarted { get; private set; } = false;
 
     [Header("Skor ve Ekonomi")]
     public int score { get; private set; } = 0;
@@ -37,7 +37,7 @@ public class GameManager : MonoBehaviour
 
     void Awake()
     {
-       
+        
         if (Instance != null && Instance != this)
         {
             Destroy(gameObject);
@@ -53,6 +53,11 @@ public class GameManager : MonoBehaviour
     {
         if (isGameOver) return;
         score += amount;
+    }
+
+    public void StartGame()
+    {
+        isGameStarted = true;
     }
 
    
@@ -83,7 +88,6 @@ public class GameManager : MonoBehaviour
         currentAmmo += amount;
     }
 
-    
     public bool TryUseAmmo(int amount = 1)
     {
         if (currentAmmo < amount) return false;
@@ -92,7 +96,7 @@ public class GameManager : MonoBehaviour
         return true;
     }
 
-   
+    
     public void TakeDamage(int amount = 1)
     {
         if (isGameOver) return;
@@ -114,17 +118,18 @@ public class GameManager : MonoBehaviour
         isGameOver = true;
         Debug.Log($"OYUN BÝTTÝ - Skor: {score}, Altýn: {gold}");
 
-       
+      
     }
 
     public void RestartGame()
     {
         isGameOver = false;
+        isGameStarted = true;
         score = 0;
         gold = 0;
         currentAmmo = startingAmmo;
         currentHealth = startingHealth;
         comboCount = 0;
-        
+       
     }
 }

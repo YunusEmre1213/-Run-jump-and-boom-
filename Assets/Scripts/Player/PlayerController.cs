@@ -18,6 +18,8 @@ public class PlayerController : MonoBehaviour
 
     [Tooltip("Yerçekimi kuvveti (negatif olmalý)")]
     public float gravity = -20f;
+
+  
     public float forwardSpeed { get; private set; }
     private float elapsedTime = 0f;
 
@@ -43,7 +45,7 @@ public class PlayerController : MonoBehaviour
     [Tooltip("Bir hareketin swipe sayýlmasý için gereken minimum piksel mesafesi")]
     public float swipeThreshold = 50f;
 
-    // -1 = sol þerit, 0 = orta þerit, 1 = sað þerit
+  
     private int currentLane = 0;
     private float targetX;
 
@@ -53,13 +55,13 @@ public class PlayerController : MonoBehaviour
     private Vector2 touchStartPos;
     private bool isTouching;
 
-   
+    
     private float standingHeight;
     private Vector3 standingCenter;
     private Vector3 standingScale;
     private bool isSliding;
 
-   
+    
     private float footOffset;
 
     void Awake()
@@ -76,8 +78,8 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-       
-        if (GameManager.Instance != null && GameManager.Instance.isGameOver) return;
+        
+        if (GameManager.Instance != null && (!GameManager.Instance.isGameStarted || GameManager.Instance.isGameOver)) return;
 
         UpdateSpeed();
         HandleSwipeInput();
@@ -160,7 +162,7 @@ public class PlayerController : MonoBehaviour
 
     private void Jump()
     {
-       
+        
         if (controller.isGrounded && !isSliding)
         {
             verticalVelocity = jumpForce;
@@ -169,7 +171,7 @@ public class PlayerController : MonoBehaviour
 
     private void Slide()
     {
-        
+       
         if (isSliding || !controller.isGrounded) return;
 
         StartCoroutine(SlideCoroutine());
@@ -188,7 +190,7 @@ public class PlayerController : MonoBehaviour
 
         yield return new WaitForSeconds(slideDuration);
 
-        
+      
         controller.height = standingHeight;
         controller.center = standingCenter;
         transform.localScale = standingScale;
