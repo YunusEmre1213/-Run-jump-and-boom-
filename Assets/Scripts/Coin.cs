@@ -1,5 +1,6 @@
 using UnityEngine;
 
+
 public class Coin : MonoBehaviour
 {
     [Tooltip("Bu coin toplandýðýnda kazanýlacak skor miktarý")]
@@ -7,6 +8,7 @@ public class Coin : MonoBehaviour
 
     [Tooltip("Bu coin toplandýðýnda kazanýlacak altýn miktarý")]
     public int goldValue = 1;
+
 
     private void OnTriggerEnter(Collider other)
     {
@@ -16,6 +18,11 @@ public class Coin : MonoBehaviour
         {
             GameManager.Instance.AddScore(scoreValue);
             GameManager.Instance.AddGold(goldValue);
+        }
+
+        if (AudioManager.Instance != null)
+        {
+            AudioManager.Instance.PlayCoin();
         }
 
         gameObject.SetActive(false);

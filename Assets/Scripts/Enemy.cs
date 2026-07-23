@@ -17,7 +17,7 @@ public class Enemy : MonoBehaviour
     [Tooltip("Geri sayýmý gösteren halka objesi (opsiyonel, boþ býrakýlabilir)")]
     public Transform ringIndicator;
 
-   
+
     [HideInInspector]
     public ObjectPool sourcePool;
 
@@ -33,7 +33,7 @@ public class Enemy : MonoBehaviour
             ringInitialScale = ringIndicator.localScale;
         }
 
-       
+   
         GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
         if (playerObj != null)
         {
@@ -41,7 +41,6 @@ public class Enemy : MonoBehaviour
         }
     }
 
-    
     void OnEnable()
     {
         if (ringIndicator != null)
@@ -65,12 +64,11 @@ public class Enemy : MonoBehaviour
     {
         if (countdownStarted || playerTransform == null) return;
 
-       
+     
         if (GameManager.Instance != null && !GameManager.Instance.isGameStarted) return;
 
         float distance = transform.position.z - playerTransform.position.z;
 
-      
         if (distance <= activationDistance)
         {
             countdownStarted = true;
@@ -95,11 +93,11 @@ public class Enemy : MonoBehaviour
             yield return null;
         }
 
-      
+        
         OnMissed();
     }
 
-  
+ 
     public void OnHit()
     {
         if (GameManager.Instance != null)
@@ -107,7 +105,20 @@ public class Enemy : MonoBehaviour
             GameManager.Instance.RegisterEnemyHit(scoreValue);
         }
 
-       
+        if (EffectsManager.Instance != null)
+        {
+            EffectsManager.Instance.SpawnExplosion(transform.position);
+        }
+
+        if (AudioManager.Instance != null)
+        {
+            AudioManager.Instance.PlayEnemyHit();
+        }
+
+        if (CameraShake.Instance != null)
+        {
+            CameraShake.Instance.Shake(0.12f, 0.15f);
+        }
 
         ReturnToPool();
     }
@@ -118,6 +129,16 @@ public class Enemy : MonoBehaviour
         if (GameManager.Instance != null)
         {
             GameManager.Instance.TakeDamage(1);
+        }
+
+        if (AudioManager.Instance != null)
+        {
+            AudioManager.Instance.PlayDamage();
+        }
+
+        if (CameraShake.Instance != null)
+        {
+            CameraShake.Instance.Shake(0.1f, 0.1f);
         }
 
         ReturnToPool();

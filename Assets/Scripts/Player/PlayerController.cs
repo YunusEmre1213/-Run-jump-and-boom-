@@ -2,7 +2,6 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-
 [RequireComponent(typeof(CharacterController))]
 public class PlayerController : MonoBehaviour
 {
@@ -19,7 +18,7 @@ public class PlayerController : MonoBehaviour
     [Tooltip("Yerçekimi kuvveti (negatif olmalý)")]
     public float gravity = -20f;
 
-  
+ 
     public float forwardSpeed { get; private set; }
     private float elapsedTime = 0f;
 
@@ -45,7 +44,7 @@ public class PlayerController : MonoBehaviour
     [Tooltip("Bir hareketin swipe sayýlmasý için gereken minimum piksel mesafesi")]
     public float swipeThreshold = 50f;
 
-  
+    
     private int currentLane = 0;
     private float targetX;
 
@@ -61,14 +60,12 @@ public class PlayerController : MonoBehaviour
     private Vector3 standingScale;
     private bool isSliding;
 
-    
     private float footOffset;
 
     void Awake()
     {
         controller = GetComponent<CharacterController>();
 
-       
         standingHeight = controller.height;
         standingCenter = controller.center;
         standingScale = transform.localScale;
@@ -78,7 +75,7 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-        
+     
         if (GameManager.Instance != null && (!GameManager.Instance.isGameStarted || GameManager.Instance.isGameOver)) return;
 
         UpdateSpeed();
@@ -87,6 +84,7 @@ public class PlayerController : MonoBehaviour
         Move();
     }
 
+
     private void UpdateSpeed()
     {
         elapsedTime += Time.deltaTime;
@@ -94,10 +92,21 @@ public class PlayerController : MonoBehaviour
         forwardSpeed = Mathf.Lerp(baseForwardSpeed, maxForwardSpeed, t);
     }
 
+
     private void OnControllerColliderHit(ControllerColliderHit hit)
     {
         if (hit.gameObject.CompareTag("Obstacle"))
         {
+            if (AudioManager.Instance != null)
+            {
+                AudioManager.Instance.PlayDamage();
+            }
+
+            if (CameraShake.Instance != null)
+            {
+                CameraShake.Instance.Shake(0.25f, 0.3f);
+            }
+
             if (GameManager.Instance != null)
             {
                 GameManager.Instance.TriggerGameOver();
@@ -143,7 +152,7 @@ public class PlayerController : MonoBehaviour
             }
         }
 
-        
+     
         if (Keyboard.current != null)
         {
             if (Keyboard.current.rightArrowKey.wasPressedThisFrame) ChangeLane(1);
@@ -162,7 +171,7 @@ public class PlayerController : MonoBehaviour
 
     private void Jump()
     {
-        
+       
         if (controller.isGrounded && !isSliding)
         {
             verticalVelocity = jumpForce;
@@ -190,7 +199,7 @@ public class PlayerController : MonoBehaviour
 
         yield return new WaitForSeconds(slideDuration);
 
-      
+        
         controller.height = standingHeight;
         controller.center = standingCenter;
         transform.localScale = standingScale;
