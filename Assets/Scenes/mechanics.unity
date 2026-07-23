@@ -271,6 +271,52 @@ Canvas:
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
+--- !u!1 &189519732
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 189519734}
+  - component: {fileID: 189519733}
+  m_Layer: 0
+  m_Name: Pool_Enemy
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &189519733
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 189519732}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f3eb0902dc1773f419382217b2c0fd8b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ObjectPool
+  prefab: {fileID: 4845616584674934021, guid: cfe60cefa4ae1354b8c0cd5793155aa9, type: 3}
+  initialSize: 10
+--- !u!4 &189519734
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 189519732}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &455220158
 GameObject:
   m_ObjectHideFlags: 0
@@ -1850,6 +1896,8 @@ MonoBehaviour:
   chunksAhead: 4
   despawnDistanceBehind: 25
   difficultyRampTime: 90
+  enemyPool: {fileID: 189519733}
+  enemySpawnChance: 0.1
 --- !u!4 &1483803307
 Transform:
   m_ObjectHideFlags: 0
@@ -2169,3 +2217,4 @@ SceneRoots:
   - {fileID: 65767893}
   - {fileID: 600566929}
   - {fileID: 1460597188}
+  - {fileID: 189519734}

@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-
 public class ChunkSpawner : MonoBehaviour
 {
     [System.Serializable]
@@ -35,7 +34,15 @@ public class ChunkSpawner : MonoBehaviour
     [Tooltip("Zorluðun tam seviyeye (en zor chunk'larýn baskýn olduðu noktaya) ulaþmasý ne kadar sürer (saniye)")]
     public float difficultyRampTime = 90f;
 
-    private List<(GameObject obj, ObjectPool sourcePool)> activeChunks = new();
+    [Header("Düþman Ayarlarý")]
+    [Tooltip("Düþman prefabýnýn havuzu")]
+    public ObjectPool enemyPool;
+
+    [Range(0f, 1f)]
+    [Tooltip("Bir chunk'taki her düþman spawn noktasýnda düþman çýkma olasýlýðý")]
+    public float enemySpawnChance = 0.4f;
+
+    private List<(GameObject obj, ObjectPool sourcePool, List<GameObject> enemies)> activeChunks = new();
     private float nextSpawnZ = 0f;
     private float elapsedTime = 0f;
 
@@ -66,17 +73,36 @@ public class ChunkSpawner : MonoBehaviour
         Vector3 spawnPosition = new Vector3(0f, 0f, nextSpawnZ);
         GameObject chunk = chosen.pool.GetFromPool(spawnPosition, Quaternion.identity);
 
-        activeChunks.Add((chunk, chosen.pool));
+        List<GameObject> spawnedEnemies = SpawnEnemiesForChunk(chunk);
+
+        activeChunks.Add((chunk, chosen.pool, spawnedEnemies));
         nextSpawnZ += chunkLength;
     }
+    private List<GameObject> SpawnEnemiesForChunk(GameObject chunk)
+    {
+        List<GameObject> spawned = new List<GameObject>();
 
-    
+        if (enemyPool == null) return spawned;
+
+        EnemySpawnPoint[] spawnPoints = chunk.GetComponentsInChildren<EnemySpawnPoint>();
+
+        foreach (var point in spawnPoints)
+        {
+            if (Random.value <= enemySpawnChance)
+            {
+                GameObject enemy = enemyPool.GetFromPool(point.transform.position, point.transform.rotation);
+                spawned.Add(enemy);
+            }
+        }
+
+        return spawned;
+    }
+
     private float GetDifficultyProgress()
     {
         return 1f - Mathf.Exp(-elapsedTime / difficultyRampTime);
     }
 
-  
     private ChunkOption GetWeightedRandomChunk()
     {
         float progress = GetDifficultyProgress();
@@ -86,8 +112,8 @@ public class ChunkSpawner : MonoBehaviour
 
         foreach (var option in chunkOptions)
         {
-          
-            float easyWeight = 4f - option.difficultyTier;  
+            
+            float easyWeight = 4f - option.difficultyTier;   
             float hardWeight = option.difficultyTier;         
             float weight = Mathf.Lerp(easyWeight, hardWeight, progress);
             weight = Mathf.Max(weight, 0.1f); 
@@ -108,7 +134,7 @@ public class ChunkSpawner : MonoBehaviour
             }
         }
 
-    
+       
         return chunkOptions[chunkOptions.Count - 1];
     }
 
@@ -116,11 +142,20 @@ public class ChunkSpawner : MonoBehaviour
     {
         for (int i = activeChunks.Count - 1; i >= 0; i--)
         {
-            var (obj, sourcePool) = activeChunks[i];
+            var (obj, sourcePool, enemies) = activeChunks[i];
 
             if (player.position.z - obj.transform.position.z > despawnDistanceBehind + chunkLength)
             {
                 sourcePool.ReturnToPool(obj);
+
+                foreach (var enemy in enemies)
+                {
+                    if (enemy != null && enemy.activeSelf)
+                    {
+                        enemyPool.ReturnToPool(enemy);
+                    }
+                }
+
                 activeChunks.RemoveAt(i);
             }
         }
