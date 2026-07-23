@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 6032319186029115248}
   - component: {fileID: 7463561069250094571}
   - component: {fileID: 6852504551521133169}
+  - component: {fileID: 3411887489225598000}
   m_Layer: 0
   m_Name: Enemy
   m_TagString: Enemy
@@ -109,7 +110,21 @@ CapsuleCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.5
-  m_Height: 2
+  m_Radius: 0.89
+  m_Height: 2.48
   m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &3411887489225598000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4845616584674934021}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c8413c4c092d1534eaef2e814b4ba1f0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Enemy
+  scoreValue: 20
+  sourcePool: {fileID: 0}

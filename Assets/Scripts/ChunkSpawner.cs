@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+
 public class ChunkSpawner : MonoBehaviour
 {
     [System.Serializable]
@@ -78,6 +79,8 @@ public class ChunkSpawner : MonoBehaviour
         activeChunks.Add((chunk, chosen.pool, spawnedEnemies));
         nextSpawnZ += chunkLength;
     }
+
+   
     private List<GameObject> SpawnEnemiesForChunk(GameObject chunk)
     {
         List<GameObject> spawned = new List<GameObject>();
@@ -91,6 +94,13 @@ public class ChunkSpawner : MonoBehaviour
             if (Random.value <= enemySpawnChance)
             {
                 GameObject enemy = enemyPool.GetFromPool(point.transform.position, point.transform.rotation);
+
+                Enemy enemyScript = enemy.GetComponent<Enemy>();
+                if (enemyScript != null)
+                {
+                    enemyScript.sourcePool = enemyPool;
+                }
+
                 spawned.Add(enemy);
             }
         }
@@ -98,6 +108,7 @@ public class ChunkSpawner : MonoBehaviour
         return spawned;
     }
 
+   
     private float GetDifficultyProgress()
     {
         return 1f - Mathf.Exp(-elapsedTime / difficultyRampTime);
@@ -112,9 +123,9 @@ public class ChunkSpawner : MonoBehaviour
 
         foreach (var option in chunkOptions)
         {
-            
+        
             float easyWeight = 4f - option.difficultyTier;   
-            float hardWeight = option.difficultyTier;         
+            float hardWeight = option.difficultyTier;        
             float weight = Mathf.Lerp(easyWeight, hardWeight, progress);
             weight = Mathf.Max(weight, 0.1f); 
 
